@@ -1,0 +1,37 @@
+.dataTables_wrapper .dataTables_paginate {
+    @apply flex flex-wrap items-center justify-center gap-1 mt-4;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    @apply px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 mx-1 transition hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500;
+    font-weight: 500;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    @apply bg-blue-600 text-white border-blue-600 dark:bg-blue-600 dark:text-white dark:border-blue-600;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+    @apply opacity-50 cursor-not-allowed bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border-gray-200 dark:border-gray-800;
+}
+
+.dataTables_wrapper .dataTables_length label {
+    @apply flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 mb-2;
+}
+.dataTables_wrapper .dataTables_length select {
+    @apply border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:ring-blue-500 focus:border-blue-500;
+}
+.dataTables_wrapper .dataTables_filter label {
+    @apply flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 mb-2;
+}
+.dataTables_wrapper .dataTables_filter input[type="search"] {
+    @apply border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:ring-blue-500 focus:border-blue-500;
+}
+.dataTables_wrapper .dataTables_filter {
+    @apply mb-2;
+}
+.dataTables_wrapper .dataTables_length {
+    @apply mb-2;
+}
+.dataTables_wrapper .dataTables_info {
+    @apply mt-2 text-gray-600 dark:text-gray-300;
+}
