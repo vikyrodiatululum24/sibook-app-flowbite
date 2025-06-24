@@ -21,9 +21,8 @@
             </div>
         </div>
     </div>
-
-
 </x-app-layout>
+
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
     function onScanSuccess(decodedText, decodedResult) {

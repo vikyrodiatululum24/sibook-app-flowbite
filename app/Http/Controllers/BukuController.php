@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Buku;
-use Yajra\DataTables\DataTables;
-use App\DataTables\BukuDataTable;
 
 class BukuController extends Controller
 {

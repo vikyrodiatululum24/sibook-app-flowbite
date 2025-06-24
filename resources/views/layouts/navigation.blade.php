@@ -16,81 +16,31 @@
                 <a href="{{ route('dashboard') }}" class="flex ms-2 md:me-24">
                     <img src="{{ asset('img/logoLighh.png') }}" class="h-10 me-3 " alt="FlowBite Logo" />
                     <span
-                        class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">BOOTS</span>
+                        class="self-center text-xl font-extrabold sm:text-3xl whitespace-nowrap text-blue-900 dark:text-white">BOOTS</span>
                 </a>
             </div>
             <div class="flex items-center">
-                {{-- <div class="relative me-3">
-                    <button id="multiLevelDropdownButton" data-dropdown-toggle="multi-dropdown"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-1.5 py-1.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                        type="button"><svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M10 2a6 6 0 0 0-6 6v3.586l-.707.707A1 1 0 0 0 4 15h12a1 1 0 0 0 .707-1.707L16 11.586V8a6 6 0 0 0-6-6zm0 16a2 2 0 0 0 2-2H8a2 2 0 0 0 2 2z" />
-                        </svg>
-                        <span class="sr-only">Notifications</span>
-                        @if (auth()->user()->unreadNotifications->count())
-                            <div
-                                class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">
-                                {{ auth()->user()->unreadNotifications->count() }}
-                            </div>
-                        @endif
-                    </button>
-                </div> --}}
 
-                <!-- Dropdown menu -->
-                {{-- <div id="multi-dropdown"
-                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
-                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                        aria-labelledby="multiLevelDropdownButton">
-                        <li>
-                            <a href="#"
-                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
-                        </li>
-                        <li>
-                            <button id="doubleDropdownButton" data-dropdown-toggle="doubleDropdown"
-                                data-dropdown-placement="right-start" type="button"
-                                class="flex items-center justify-between w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dropdown<svg
-                                    class="w-2.5 h-2.5 ms-3 rtl:rotate-180" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 9 4-4-4-4" />
-                                </svg></button>
-                            <div id="doubleDropdown"
-                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
-                                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                    aria-labelledby="doubleDropdownButton">
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Overview</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My
-                                            downloads</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Billing</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Rewards</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign
-                                out</a>
-                        </li>
-                    </ul>
-                </div> --}}
+
+                <div class="relative me-3">
+                    <button id="notificationDropdownButton" data-dropdown-toggle="notificationDropdown"
+                        class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 relative"
+                        type="button">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span id="notif-badge"
+                            class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5"></span>
+                    </button>
+                    <div id="notificationDropdown"
+                        class="z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-80 dark:bg-gray-700 absolute right-0 mt-2">
+                        <div class="py-2 px-4 font-semibold text-gray-700 dark:text-gray-200 border-b">Notifikasi</div>
+                        <ul id="notif-list" class="max-h-80 overflow-y-auto"></ul>
+                        <div class="py-2 px-4 text-center text-xs text-gray-400">
+                        </div>
+                    </div>
+                </div>
 
                 <button id="theme-toggle" type="button"
                     class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
@@ -193,4 +143,55 @@
         }
 
     });
+
+    // Notifikasi Navbar
+    function fetchNotifications() {
+        fetch('/notifications')
+            .then(res => res.json())
+            .then(data => {
+                let notifList = document.getElementById('notif-list');
+                notifList.innerHTML = '';
+                if (data.length === 0) {
+                    notifList.innerHTML = '<li class="px-4 py-2 text-gray-500 text-sm">Tidak ada notifikasi</li>';
+                } else {
+                    data.forEach(n => {
+                        notifList.innerHTML +=
+                            `<li class="px-4 py-2 border-b last:border-0 cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600" onclick="markNotifAsRead('${n.id}', this)"><div class="font-medium">${n.message || n.data?.message || '-'}</div><div class="text-xs text-gray-400">${n.created_at ? new Date(n.created_at).toLocaleString('id-ID') : ''}</div></li>`;
+                    });
+                }
+            });
+    }
+
+    function fetchNotifCount() {
+        fetch('/notifications/unread-count')
+            .then(res => res.json())
+            .then(data => {
+                let badge = document.getElementById('notif-badge');
+                if (data.count > 0) {
+                    badge.textContent = data.count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            });
+    }
+
+    function markNotifAsRead(id, el) {
+        fetch(`/notifications/${id}/read`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            })
+            .then(() => {
+                console.log(`Notification ${id} marked as read`);
+                el.classList.add('bg-gray-200', 'dark:bg-gray-800');
+                fetchNotifCount();
+            });
+    }
+    document.getElementById('notificationDropdownButton').addEventListener('click', function() {
+        fetchNotifications();
+        setTimeout(fetchNotifCount, 500);
+    });
+    setInterval(fetchNotifCount, 10000);
 </script>

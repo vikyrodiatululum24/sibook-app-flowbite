@@ -46,4 +46,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Notifikasi relasi untuk custom Notification model
+    public function customNotifications()
+    {
+        return $this->hasMany(\App\Models\Notification::class, 'notifiable_id')->latest();
+    }
 }

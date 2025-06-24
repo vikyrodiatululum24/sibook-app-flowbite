@@ -49,4 +49,28 @@ class CustomerController extends Controller
         $customer->delete();
         return redirect()->route('customer.index')->with('success', 'Customer berhasil dihapus.');
     }
+
+        public function data(Request $request)
+    {
+        $customers = Customer::query();
+        if ($request->has('search') && $request->input('search.value') !== null) {
+            $search = $request->input('search.value');
+            if (!empty($search)) {
+                $customers->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('desc', 'like', "%{$search}%")
+                        ->orWhere('penerbit', 'like', "%{$search}%");
+                });
+            }
+        }
+
+        return datatables()
+            ->of($customers)
+            ->addColumn('action', function ($customer) {
+                return view('customer.partials.action', compact('customer'))->render();
+            })
+            ->rawColumns(['action']) // wajib jika return HTML
+            ->make(true);
+    }
+
 }

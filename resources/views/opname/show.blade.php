@@ -5,7 +5,11 @@
         </h2>
     </x-slot>
     <div class="p-6 sm:ml-64">
-        <div class="p-4 bg-white dark:bg-gray-800 rounded shadow max-w-lg ">
+        <div class="p-4 mx-auto bg-white dark:bg-gray-800 rounded shadow max-w-lg ">
+            <div class="mb-4">
+                <span class="block text-gray-500 dark:text-gray-300 text-sm">Nama Buku</span>
+                <span class="font-semibold text-gray-900 dark:text-white">{{ $opname->user->name ?? '-' }}</span>
+            </div>
             <div class="mb-4">
                 <span class="block text-gray-500 dark:text-gray-300 text-sm">Nama Buku</span>
                 <span class="font-semibold text-gray-900 dark:text-white">{{ $opname->buku->name ?? '-' }}</span>
@@ -27,9 +31,13 @@
                 <span class="font-semibold text-gray-900 dark:text-white">{{ $opname->tanggal_opname }}</span>
             </div>
             <div class="mb-4">
+                <span class="block text-gray-500 dark:text-gray-300 text-sm">Periode Opname</span>
+                <span class="font-semibold text-gray-900 dark:text-white">{{ $opname->periode_opname }}</span>
+            </div>
+            <div class="mb-4">
                 <span class="block text-gray-500 dark:text-gray-300 text-sm mb-2">Keterangan</span>
                 @php
-                    $bgColor = match($opname->keterangan) {
+                    $bgColor = match ($opname->keterangan) {
                         'Lebih' => 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
                         'Kurang' => 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
                         'Sesuai' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
@@ -39,6 +47,10 @@
                 <span class="font-semibold px-2 py-1 rounded {{ $bgColor }}">
                     {{ $opname->keterangan ?? '-' }}
                 </span>
+            </div>
+            <div class="flex gap-2">
+                <a href="{{ route('opname.index') }}"
+                    class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Kembali</a>
             </div>
         </div>
     </div>

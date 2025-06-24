@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight dark:text-white">
+        <h2 class="text-3xl font-bold text-blue-900 leading-tight dark:text-white">
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
     <div class="p-4 sm:ml-64">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
             <!-- Buku Card -->
             <div class="flex items-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition">
                 <div class="p-3 mr-4 bg-blue-100 rounded-full dark:bg-blue-900">
@@ -48,8 +48,6 @@
                     <div class="text-gray-500 dark:text-gray-300">Total Customer</div>
                 </div>
             </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <!-- Masuk Card -->
             <div class="flex items-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition">
                 <div class="p-3 mr-4 bg-indigo-100 rounded-full dark:bg-indigo-900">
@@ -96,7 +94,7 @@
         </div>
         <!-- Chart Placeholder (Flowbite/Chart.js) -->
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Statistik Buku (Contoh Chart)</h3>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Statistik Buku</h3>
             <canvas id="dashboardChart" height="80"></canvas>
         </div>
     </div>
@@ -105,17 +103,13 @@
     <script>
         const ctx = document.getElementById('dashboardChart').getContext('2d');
         new Chart(ctx, {
-            type: 'bar',
+            type: 'line',
             data: {
-                labels: ['Buku', 'Supplier', 'Customer', 'Masuk', 'Keluar', 'Opname'],
+                labels: {!! json_encode($keluarPerHariLabels ?? []) !!},
                 datasets: [{
-                    label: 'Total',
-                    data: [{{ $bukuCount ?? 0 }}, {{ $supplierCount ?? 0 }}, {{ $customerCount ?? 0 }},
-                        {{ $masukCount ?? 0 }}, {{ $keluarCount ?? 0 }}, {{ $opnameCount ?? 0 }}
-                    ],
-                    backgroundColor: [
-                        '#2563eb', '#22c55e', '#eab308', '#6366f1', '#ef4444', '#a21caf'
-                    ],
+                    label: 'Buku Keluar per Hari',
+                    data: {!! json_encode($keluarPerHariData ?? []) !!},
+                    backgroundColor: '#ef4444',
                 }]
             },
             options: {

@@ -7,6 +7,17 @@
     </x-slot>
     <div class="py-6 sm:ml-64">
         <div class="p-4 max-w-lg mx-auto bg-white dark:bg-gray-800 rounded-lg shadow">
+            @if ($errors->any())
+                <div class="mb-4">
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        <ul class="list-disc pl-5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            @endif
             <form method="POST" action="{{ route('supplier.store') }}" class="">
                 @csrf
                 <div class="mb-4">

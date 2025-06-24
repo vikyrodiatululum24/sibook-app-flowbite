@@ -21,8 +21,20 @@ class SupplierController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
         Supplier::create($request->all());
         return redirect()->route('supplier.index')->with('success', 'Supplier berhasil ditambahkan.');
+    }
+
+    public function storeBook(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+        Supplier::create($request->all());
+        return redirect()->back()->with('success', 'Supplier berhasil ditambahkan.');
     }
 
     public function show($id)
@@ -51,9 +63,26 @@ class SupplierController extends Controller
         return redirect()->route('supplier.index')->with('success', 'Supplier berhasil dihapus.');
     }
 
-    public function getData()
+    public function data(Request $request)
     {
-        $suppliers = Supplier::all();
-        return response()->json($suppliers);
+        $suppliers = Supplier::query();
+        if ($request->has('search') && $request->input('search.value') !== null) {
+            $search = $request->input('search.value');
+            if (!empty($search)) {
+                $suppliers->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('address', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
+                });
+            }
+        }
+
+        return datatables()
+            ->of($suppliers)
+            ->addColumn('action', function ($supplier) {
+                return view('supplier.partials.action', compact('supplier'))->render();
+            })
+            ->rawColumns(['action']) // wajib jika return HTML
+            ->make(true);
     }
 }

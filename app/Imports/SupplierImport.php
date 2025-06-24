@@ -13,11 +13,17 @@ class SupplierImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
 {
     use SkipsFailures;
 
+    public $failedRows = [];
+
     public function model(array $row)
     {
         $name = trim($row['name']);
         // Skip jika nama sudah ada di database
         if (Supplier::whereRaw('LOWER(name) = ?', [strtolower($name)])->exists()) {
+            $this->failedRows[] = [
+                'row' => $row,
+                'error' => 'Nama supplier sudah ada di database.'
+            ];
             return null;
         }
         return new Supplier([

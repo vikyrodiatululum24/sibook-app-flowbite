@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="p-4 sm:ml-64 pt-30">
         <div
-            class="flex flex-col bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            class="flex flex-col mx-auto max-w-lg bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
             @if (!empty($buku->cover))
                 <img class="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
                     src="{{ asset('storage/' . $buku->cover) }}" alt="">

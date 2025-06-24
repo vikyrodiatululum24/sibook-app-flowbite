@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="sm:flex justify-between items-center">
-            <h2 class="font-semibold text-xl mb-4 text-gray-800 leading-tight dark:text-white">
+        <div class="sm:flex justify-between gap-4 items-center">
+            <h2 class="font-bold text-blue-900 text-3xl mb-4 leading-tight dark:text-white">
                 {{ __('Daftar Supplier') }}
             </h2>
             <div class="flex items-center gap-4">
@@ -102,54 +102,268 @@
         </div>
     </x-slot>
     <div class="p-4 sm:ml-64">
-        <div class="overflow-x-auto">
-            <table id="search-table" class="min-w-full bg-white dark:bg-gray-800 rounded shadow">
-            </table>
-        </div>
+        <table id="example" class="min-w-full divide-y divide-gray-200 table-auto">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Alamat</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                </tr>
+            </thead>
+        </table>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
-    <script>
-        if (document.getElementById("search-table") && typeof simpleDatatables.DataTable !== 'undefined') {
-            fetch("{{ route('supplier.data') }}")
-                .then(response => response.json())
-                .then(result => {
-                    const headings = ["Nama", "Alamat", "Telepon", "Action"];
-                    const data = result.map(supplier => [
-                        supplier.name,
-                        supplier.address,
-                        supplier.phone,
-                        `<div class="flex gap-2">
-                            <a href="/supplier/${supplier.id}" class="text-blue-600" title="Lihat">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm6 0c0 5-9 9-9 9s-9-4-9-9a9 9 0 0118 0z" />
-                                </svg>
-                            </a>
-                            <a href="/supplier/${supplier.id}/edit" class="text-yellow-600" title="Edit">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h2m2 0h2a2 2 0 012 2v2m0 2v6a2 2 0 01-2 2h-6a2 2 0 01-2-2v-6a2 2 0 012-2h2m2 0V5m0 0L7 13m0 0l-4 4m4-4l4 4" />
-                                </svg>
-                            </a>
-                            <form action="/supplier/${supplier.id}" method="POST" onsubmit="return confirm('Yakin hapus?')">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                <button type="submit" class="text-red-600 btn-delete">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </form>
-                        </div>`
-                    ]);
-                    const customData = {
-                        headings,
-                        data
-                    };
-                    new simpleDatatables.DataTable("#search-table", {
-                        data: customData,
-                        searchable: true,
-                        sortable: false
-                    });
-                });
-        };
-    </script>
 </x-app-layout>
+
+{{-- style datatable --}}
+<style>
+    /* DataTable Responsive Wrapper */
+    .dataTables_wrapper {
+        width: 100%;
+        overflow-x: hidden;
+        padding: 1rem 0;
+        margin: 1rem 0;
+        background: transparent;
+    }
+
+    /* Table Styles */
+    .dataTables_wrapper table.dataTable {
+        width: 100%;
+        min-width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        background-color: transparent;
+        font-size: 1rem;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        transition: background 0.3s;
+        color: #334155;
+    }
+
+    .dark .dataTables_wrapper table.dataTable {
+        color: #e5e7eb;
+        background-color: transparent;
+    }
+
+    .dataTables_wrapper table.dataTable thead {
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        background-color: #f9fafb;
+        color: #374151;
+    }
+
+    .dark .dataTables_wrapper table.dataTable thead {
+        background-color: #374151;
+        color: #d1d5db;
+    }
+
+    .dataTables_wrapper table.dataTable thead th {
+        padding: 0.75rem 1.5rem;
+        font-weight: 700;
+        background: none;
+        color: inherit;
+        border-bottom: none;
+        letter-spacing: 0.05em;
+        text-shadow: none;
+    }
+
+    .dataTables_wrapper table.dataTable tbody td {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        color: #334155;
+        vertical-align: middle;
+        background: transparent;
+        transition: background 0.2s;
+    }
+
+    .dark .dataTables_wrapper table.dataTable tbody td {
+        color: #e5e7eb;
+        border-bottom: 1px solid #374151;
+    }
+
+    .dataTables_wrapper table.dataTable tbody tr {
+        background-color: #fff;
+        border-bottom: 1px solid #e5e7eb;
+        transition: box-shadow 0.2s, background 0.2s;
+    }
+
+    .dark .dataTables_wrapper table.dataTable tbody tr {
+        background-color: #1f2937;
+        border-bottom: 1px solid #374151;
+    }
+
+    .dataTables_wrapper table.dataTable tbody tr:hover {
+        background-color: #f3f4f6;
+        box-shadow: none;
+    }
+
+    .dark .dataTables_wrapper table.dataTable tbody tr:hover {
+        background-color: #374151;
+    }
+
+    .dataTables_wrapper table.dataTable.no-footer {
+        border-bottom: none;
+    }
+
+    /* Pagination */
+    .dataTables_wrapper .dataTables_paginate {
+        margin-top: 1rem;
+        text-align: right;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        background-color: #f3f4f6;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.375rem;
+        color: #2563eb;
+        margin: 0 3px;
+        padding: 6px 14px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: background 0.2s, color 0.2s, border 0.2s;
+    }
+
+    .dark .dataTables_wrapper .dataTables_paginate .paginate_button {
+        background-color: #374151;
+        border: 1px solid #374151;
+        color: #60a5fa;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background-color: #2563eb;
+        color: #fff !important;
+        border: 1px solid #2563eb;
+    }
+
+    .dark .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+    .dark .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background-color: #60a5fa;
+        color: #1e293b !important;
+        border: 1px solid #60a5fa;
+    }
+
+    /* Length & Filter */
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 1.25rem;
+    }
+
+    .dataTables_wrapper .dataTables_length select,
+    .dataTables_wrapper .dataTables_filter input {
+        border: 1px solid #e5e7eb;
+        border-radius: 0.375rem;
+        padding: 0.50rem 1rem;
+        background-color: #f9fafb;
+        color: #374151;
+        font-size: 1rem;
+        transition: border 0.2s, background 0.2s;
+    }
+
+    .dark .dataTables_wrapper .dataTables_length select,
+    .dark .dataTables_wrapper .dataTables_filter input {
+        background-color: #374151;
+        color: #e5e7eb;
+        padding: 1rem 0.75rem;
+        border: 1px solid #374151;
+    }
+
+    .dataTables_wrapper .dataTables_length label,
+    .dataTables_wrapper .dataTables_filter label {
+        font-weight: 500;
+        color: #374151;
+        font-size: 0.875rem;
+    }
+
+    .dark .dataTables_wrapper .dataTables_length label,
+    .dark .dataTables_wrapper .dataTables_filter label {
+        color: #e5e7eb;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        color: #6b7280;
+        margin-top: 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .dark .dataTables_wrapper .dataTables_info {
+        color: #d1d5db;
+    }
+
+    /* Responsive: Table scroll on small screens */
+    @media (max-width: 900px) {
+        .dataTables_wrapper {
+            overflow-x: auto;
+        }
+
+        .dataTables_wrapper table.dataTable {
+            min-width: 700px;
+        }
+    }
+
+    /* Only show Previous and Next pagination buttons on mobile */
+    @media (max-width: 640px) {
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            display: none;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.previous,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.next {
+            display: inline-block;
+        }
+    }
+</style>
+
+{{-- ajax datatable --}}
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable({
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('suppliers.data') }}',
+            columns: [{
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'address',
+                    name: 'address',
+                },
+                {
+                    data: 'phone',
+                    name: 'phone'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                }
+            ],
+            drawCallback: function() {
+                // Re-inisialisasi flowbite modal setelah data dirender ulang
+                if (typeof window.initFlowbite === 'function') {
+                    window.initFlowbite();
+                }
+            }
+        });
+    });
+</script>
+
+{{-- drop zone --}}
+<script>
+    function showFileName() {
+        const input = document.getElementById('dropzone-file');
+        const fileSelected = document.getElementById('file-selected');
+        if (input.files && input.files.length > 0) {
+            fileSelected.textContent = 'File terpilih: ' + input.files[0].name;
+            fileSelected.classList.remove('hidden');
+        } else {
+            fileSelected.textContent = '';
+            fileSelected.classList.add('hidden');
+        }
+    }
+</script>

@@ -9,20 +9,21 @@ use Illuminate\Support\Facades\Auth;
 
 class OpnameController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, $month = null)
     {
-        // Ambil filter tanggal dari request jika ada, jika tidak ambil semua
-        $tanggal = $request->input('tanggal_opname');
+        // Default bulan: bulan ini
+        $month = $month ?? now()->format('Y-m');
+        $bulanSekarang = now()->format('Y-m');
+        $bulanList = collect(range(0, 11))->map(function ($i) {
+            return now()->subMonths($i)->format('Y-m');
+        });
 
-        $query = \App\Models\Opname::with('buku');
-
-        if ($tanggal) {
-            $query->whereDate('tanggal_opname', $tanggal);
+        $query = Opname::with('buku');
+        if ($month) {
+            $query->whereRaw("DATE_FORMAT(tanggal_opname, '%Y-%m') = ?", [$month]);
         }
-
         $opnames = $query->orderBy('tanggal_opname', 'desc')->paginate(10);
-
-        return view('opname.index', compact('opnames', 'tanggal'));
+        return view('opname.index', compact('opnames', 'month', 'bulanList'));
     }
 
     public function scan()
@@ -32,6 +33,23 @@ class OpnameController extends Controller
 
     public function result($result)
     {
+        $buku = Buku::where('part_no', $result)->first();
+
+        // Cek apakah buku sudah diopname pada periode (bulan) ini
+        $periode = now()->format('Y-m');
+        $opname = Opname::with('buku')
+            ->whereHas('buku', function ($q) use ($result) {
+            $q->where('part_no', $result);
+            })
+            ->whereRaw("DATE_FORMAT(tanggal_opname, '%Y-%m') = ?", [$periode])
+            ->first();
+
+        if ($opname) {
+            // Jika sudah diopname, tampilkan data opname
+            return view('opname.result', ['buku' => $opname->buku, 'opname' => $opname]);
+        }
+
+        // Jika belum diopname, cari data buku di tabel buku
         $buku = Buku::where('part_no', $result)->first();
 
         if (!$buku) {
@@ -61,6 +79,7 @@ class OpnameController extends Controller
             'tanggal_opname.required' => 'Tanggal opname harus diisi.',
         ]);
 
+
         $validated['user_id'] = Auth::id();
         $validated['selisih'] = $validated['stock_opname'] - $validated['stock_system'];
         if ($validated['selisih'] < 0) {
@@ -71,8 +90,10 @@ class OpnameController extends Controller
 
             $validated['keterangan'] = 'Sesuai';
         }
-                // Ambil bulan dari tanggal_opname dan set periode_opname sesuai nama bulan
+
+
         $bulan = date('n', strtotime($validated['tanggal_opname']));
+        $tahun = date('Y', strtotime($validated['tanggal_opname']));
         $namaBulan = [
             1 => 'Januari',
             2 => 'Februari',
@@ -87,7 +108,7 @@ class OpnameController extends Controller
             11 => 'November',
             12 => 'Desember',
         ];
-        $validated['periode_opname'] = $namaBulan[$bulan];
+        $validated['periode_opname'] = $namaBulan[$bulan] . ' ' . $tahun;
 
         Opname::create($validated);
 
@@ -105,6 +126,30 @@ class OpnameController extends Controller
         $opname = Opname::findOrFail($id);
         $bukus = Buku::all();
         return view('opname.edit', compact('opname', 'bukus'));
+    }
+
+    public function tambah(Request $request, $id) {
+        $opname = Opname::findOrFail($id);
+        $validated = $request->validate([
+            'stock_opname' => 'required|integer|min:0',
+        ]);
+
+        // Tambahkan jumlah stock_opname sebelumnya dengan yang baru dimasukkan
+        $opname->stock_opname += $validated['stock_opname'];
+
+        // Hitung ulang selisih dan keterangan
+        $opname->selisih = $opname->stock_opname - $opname->stock_system;
+        if ($opname->selisih < 0) {
+            $opname->keterangan = "Kurang";
+        } elseif ($opname->selisih > 0) {
+            $opname->keterangan = 'Lebih';
+        } else {
+            $opname->keterangan = 'Sesuai';
+        }
+
+        $opname->save();
+
+        return redirect()->route('opname.index')->with('success', 'Jumlah opname berhasil ditambahkan.');
     }
 
     public function update(Request $request, $id)
@@ -128,7 +173,9 @@ class OpnameController extends Controller
         }
 
         // Ambil bulan dari tanggal_opname dan set periode_opname sesuai nama bulan
+        // Ambil bulan dan tahun dari tanggal_opname dan set periode_opname (format: "Januari 2024")
         $bulan = date('n', strtotime($validated['tanggal_opname']));
+        $tahun = date('Y', strtotime($validated['tanggal_opname']));
         $namaBulan = [
             1 => 'Januari',
             2 => 'Februari',
@@ -143,8 +190,7 @@ class OpnameController extends Controller
             11 => 'November',
             12 => 'Desember',
         ];
-        $validated['periode_opname'] = $namaBulan[$bulan];
-        dd($validated);
+        $validated['periode_opname'] = $namaBulan[$bulan] . ' ' . $tahun;
 
         $opname->update($validated);
 
@@ -173,5 +219,44 @@ class OpnameController extends Controller
         $opnames = $query->orderBy('tanggal_opname', 'desc')->paginate(10);
 
         return view('opname.index', compact('opnames', 'start', 'end'));
+    }
+
+    public function data(Request $request)
+    {
+        $query = Opname::with('buku');
+
+        // Pastikan id tersedia untuk kolom action di datatables
+        if ($request->has('month') && $request->month) {
+            $query->whereRaw("DATE_FORMAT(tanggal_opname, '%Y-%m') = ?", [$request->month]);
+        } else {
+            $query->whereRaw("DATE_FORMAT(tanggal_opname, '%Y-%m') = ?", [now()->format('Y-m')]);
+        }
+        
+        if ($request->has('search') && $request->input('search.value') !== null) {
+            $search = $request->input('search.value');
+            if (!empty($search)) {
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('buku', function ($qb) use ($search) {
+                        $qb->where('name', 'like', "%{$search}%")
+                            ->orWhere('part_no', 'like', "%{$search}%")
+                            ->orWhere('penerbit', 'like', "%{$search}%");
+                    })
+                    ->orWhere('keterangan', 'like', "%{$search}%")
+                    ->orWhere('tanggal_opname', 'like', "%{$search}%")
+                    ->orWhere('stock_system', 'like', "%{$search}%")
+                    ->orWhere('stock_opname', 'like', "%{$search}%")
+                    ->orWhere('selisih', 'like', "%{$search}%");
+                });
+            }
+        }
+        // Untuk debugging, jika ingin melihat hasil query, gunakan:
+        // dd($query->get());
+        return datatables()
+            ->of($query->get())
+            ->addColumn('action', function ($query) {
+                return view('opname.partials.action', compact('query'))->render();
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 }

@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="sm:flex justify-between items-center">
-            <h2 class="font-semibold text-xl mb-4 text-gray-800 leading-tight dark:text-white">
-                {{ __('Buku') }}
+            <h2 class="font-bold text-blue-900 text-3xl mb-4 leading-tight dark:text-white">
+                {{ __('Master Buku') }}
             </h2>
             <div class="flex items-center gap-4">
                 <a href="{{ route('buku.create') }}"
@@ -40,7 +40,7 @@
                             <div
                                 class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
                                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                    Import Data Supplier
+                                    Import Data Buku
                                 </h3>
                                 <button type="button"
                                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -58,7 +58,7 @@
                                 class="p-4 md:p-5 space-y-4">
                                 @csrf
                                 <div class="flex w-full justify-end underline text-green-300">
-                                    <a href="{{ route('sample.supplier') }}">
+                                    <a href="{{ route('sample.buku') }}">
                                         Unduh Format Excel
                                     </a>
                                 </div>
@@ -86,27 +86,13 @@
                                             onchange="showFileName()" />
                                     </label>
                                 </div>
-                                <script>
-                                    function showFileName() {
-                                        const input = document.getElementById('dropzone-file');
-                                        const fileSelected = document.getElementById('file-selected');
-                                        if (input.files && input.files.length > 0) {
-                                            fileSelected.textContent = 'File terpilih: ' + input.files[0].name;
-                                            fileSelected.classList.remove('hidden');
-                                        } else {
-                                            fileSelected.textContent = '';
-                                            fileSelected.classList.add('hidden');
-                                        }
-                                    }
-                                </script>
-
 
                                 <button type="submit"
                                     class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200 active:bg-blue-600 transition">
                                     Upload
                                 </button>
                                 <button data-modal-hide="static-modal" type="button"
-                                    class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Decline</button>
+                                    class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
                             </form>
                         </div>
                     </div>
@@ -121,6 +107,11 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Buku</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deskripsi</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Penerbit</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Segment</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kelas</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">kat09a</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stok</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Harga</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                 </tr>
             </thead>
@@ -128,11 +119,12 @@
     </div>
 </x-app-layout>
 
+{{-- style datatable --}}
 <style>
     /* DataTable Responsive Wrapper */
     .dataTables_wrapper {
         width: 100%;
-        overflow-x: auto;
+        overflow-x: hidden;
         padding: 1rem 0;
         margin: 1rem 0;
         background: transparent;
@@ -314,8 +306,20 @@
             min-width: 700px;
         }
     }
+
+    /* Only show Previous and Next pagination buttons on mobile */
+    @media (max-width: 640px) {
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            display: none;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.previous,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.next {
+            display: inline-block;
+        }
+    }
 </style>
 
+{{-- ajax datatable --}}
 <script>
     $(document).ready(function() {
         $('#example').DataTable({
@@ -336,12 +340,59 @@
                     name: 'penerbit'
                 },
                 {
+                    data: 'segment_name',
+                    name: 'segment_name'
+                },
+                {
+                    data: 'class',
+                    name: 'class'
+                },
+                {
+                    data: 'kat09a',
+                    name: 'kat09a'
+                },
+                {
+                    data: 'stock',
+                    name: 'stock'
+                },
+                {
+                    data: 'harga',
+                    name: 'harga',
+                    render: function(data, type, row) {
+                        if (type === 'display' || type === 'filter') {
+                            return 'Rp ' + parseInt(data).toLocaleString('id-ID');
+                        }
+                        return data;
+                    }
+                },
+                {
                     data: 'action',
                     name: 'action',
                     orderable: false,
                     searchable: false
                 }
             ],
+            drawCallback: function() {
+                // Re-inisialisasi flowbite modal setelah data dirender ulang
+                if (typeof window.initFlowbite === 'function') {
+                    window.initFlowbite();
+                }
+            }
         });
     });
+</script>
+
+{{-- drop zone --}}
+<script>
+    function showFileName() {
+        const input = document.getElementById('dropzone-file');
+        const fileSelected = document.getElementById('file-selected');
+        if (input.files && input.files.length > 0) {
+            fileSelected.textContent = 'File terpilih: ' + input.files[0].name;
+            fileSelected.classList.remove('hidden');
+        } else {
+            fileSelected.textContent = '';
+            fileSelected.classList.add('hidden');
+        }
+    }
 </script>

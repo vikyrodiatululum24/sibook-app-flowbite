@@ -17,13 +17,22 @@ class ImportController extends Controller
 
         $import = new BukuImport();
         Excel::import($import, $request->file('file'));
-
-        // Catat notifikasi jika ada error
+        $failures = method_exists($import, 'failures') ? $import->failures() : [];
+        
+        // Catat notifikasi jika ada error sebagian
         if (!empty($import->failedRows)) {
+            $limitedData = !empty($failedRows) ? array_slice($failedRows, 0, 10) : array_slice($failures, 0, 10);
             \App\Models\Notification::create([
                 'type' => 'import_buku',
                 'message' => 'Beberapa data buku gagal diimport.',
-                'data' => $import->failedRows,
+                'data' => $limitedData,
+            ]);
+        } else {
+            // Catat notifikasi jika import sukses semua
+            \App\Models\Notification::create([
+                'type' => 'import_buku',
+                'message' => 'Import buku berhasil tanpa error.',
+                'data' => null,
             ]);
         }
 
@@ -34,32 +43,40 @@ class ImportController extends Controller
         ]);
     }
 
+
     public function importSupplier(Request $request)
     {
         $request->validate([
             'file' => 'required|mimes:xlsx,xls',
         ]);
 
-        // Implementasi import untuk Supplier
-        // Misalnya, menggunakan SupplierImport yang belum dibuat
-        $supplier = new SupplierImport();
-        Excel::import($supplier, $request->file('file'));
+        $import = new SupplierImport();
+        Excel::import($import, $request->file('file'));
 
-        // Catat notifikasi jika ada error
-        // if (!empty($supplier->failedRows)) {
-        //     \App\Models\Notification::create([
-        //         'type' => 'import_supplier',
-        //         'message' => 'Beberapa data supplier gagal diimport.',
-        //         'data' => $supplier->failedRows,
-        //     ]);
-        // }
+        $failures = method_exists($import, 'failures') ? $import->failures() : [];
+        $failedRows = property_exists($import, 'failedRows') ? $import->failedRows : [];
+
+        if (!empty($failures) || !empty($failedRows)) {
+            // Batasi data yang dikirim ke tabel notifikasi, misal maksimal 10 baris
+            $limitedData = !empty($failedRows) ? array_slice($failedRows, 0, 10) : array_slice($failures, 0, 10);
+
+            \App\Models\Notification::create([
+                'type' => 'import_supplier',
+                'message' => 'Beberapa data supplier gagal diimport.',
+                'data' => $limitedData,
+            ]);
+        } else {
+            \App\Models\Notification::create([
+                'type' => 'import_supplier',
+                'message' => 'Import supplier berhasil tanpa error.',
+                'data' => null,
+            ]);
+        }
 
         return back()->with([
             'success' => 'Import berhasil!',
-            'failures' => $supplier->failures(),
-            // 'failedRows' => $supplier->failedRows,
+            'failures' => $failures,
+            'failedRows' => $failedRows,
         ]);
-
-        return back()->with('success', 'Import supplier berhasil!');
     }
 }

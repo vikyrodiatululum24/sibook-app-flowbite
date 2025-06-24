@@ -31,7 +31,6 @@ class SampleBukuExport implements FromArray, WithHeadings
                 10,
                 15000,
                 'PT. Buku Jaya'
-
             ],
         ];
     }

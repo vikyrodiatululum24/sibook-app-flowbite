@@ -1,12 +1,19 @@
 <x-app-layout>
-    <div class="pt-10 sm:ml-64">
-        <div class="p-4 bg-white dark:bg-gray-800 rounded shadow">
-            <div class="bg-base-100 overflow-hidden shadow-xs sm:rounded-lg">
-                <div class="p-6 text-base-content">
+    <x-slot name="header">
+        <div class="sm:flex justify-between items-center">
+            <h2 class="font-semibold text-xl mb-4 text-gray-800 leading-tight dark:text-white">
+                {{ __('Scan Buku Keluar') }}
+            </h2>
+        </div>
+    </x-slot>
+    <div class="sm:ml-64">
+        <div class="px-4">
+            <div class="overflow-hidden shadow-md sm:rounded-lg">
+                <div class="p-6">
                     <div class="sm:flex sm:flex-wrap gap-4 sm:gap-6 sm:w-full">
                         <div id="reader" class="dark:text-white"></div>
                         <div class="result">
-                            <div id="result" class="text-base-content">
+                            <div id="result">
                             </div>
                         </div>
                     </div>
@@ -14,8 +21,6 @@
             </div>
         </div>
     </div>
-
-
 </x-app-layout>
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
@@ -25,7 +30,7 @@
 
         document.getElementById('result').textContent = decodedText;
 
-        window.location.href = `/keluar/scan/${encodeURIComponent(decodedText)}`;
+        window.location.href = `/buku-keluar/scan/${encodeURIComponent(decodedText)}`;
     }
 
     function onScanFailure(error) {

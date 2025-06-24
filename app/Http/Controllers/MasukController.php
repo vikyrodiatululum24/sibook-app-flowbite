@@ -49,22 +49,23 @@ class MasukController extends Controller
         // dd($request->all());
         $validated = $request->validate([
             'buku_id' => 'required|exists:bukus,id',
-            'supplier_id' => 'required|exists:suppliers,id',
+            // 'supplier_id' => 'required|exists:suppliers,id',
             'jumlah' => 'required|integer|min:1',
             'keterangan' => 'nullable|string|max:255',
         ], [
             'buku_id.required' => 'Buku harus dipilih.',
-            'supplier_id.required' => 'Supplier harus dipilih.',
+            // 'supplier_id.required' => 'Supplier harus dipilih.',
             'jumlah.required' => 'Jumlah buku masuk harus diisi.',
             'jumlah.integer' => 'Jumlah buku masuk harus berupa angka.',
             'jumlah.min' => 'Jumlah buku masuk minimal 1.',
             'keterangan.max' => 'Keterangan tidak boleh lebih dari 255 karakter.'
         ]);
 
-
+        $buku = Buku::find($validated['buku_id']);
+        // dd($buku->supplier_id);
         Masuk::create([
             'buku_id' => $request->buku_id,
-            'supplier_id' => $request->supplier_id,
+            'supplier_id' => $buku->supplier_id,
             'jumlah' => $request->jumlah,
             'tanggal_masuk' => now(),
             'keterangan' => $request->keterangan
@@ -98,18 +99,19 @@ class MasukController extends Controller
 
         $validated = $request->validate([
             'buku_id' => 'required|exists:bukus,id',
-            'supplier_id' => 'required|exists:suppliers,id',
+            // 'supplier_id' => 'required|exists:suppliers,id',
             'jumlah' => 'required|integer|min:1',
             'keterangan' => 'nullable|string|max:255',
         ], [
             'buku_id.required' => 'Buku harus dipilih.',
-            'supplier_id.required' => 'Supplier harus dipilih.',
+            // 'supplier_id.required' => 'Supplier harus dipilih.',
             'jumlah.required' => 'Jumlah buku masuk harus diisi.',
             'jumlah.integer' => 'Jumlah buku masuk harus berupa angka.',
             'jumlah.min' => 'Jumlah buku masuk minimal 1.',
             'keterangan.max' => 'Keterangan tidak boleh lebih dari 255 karakter.'
         ]);
 
+        $buku = Buku::find($validated['buku_id']);
         // Ambil jumlah lama dan buku lama
         $oldJumlah = $masuk->jumlah;
         $oldBukuId = $masuk->buku_id;
@@ -117,7 +119,7 @@ class MasukController extends Controller
         // Update data masuk
         $masuk->update([
             'buku_id' => $request->buku_id,
-            'supplier_id' => $request->supplier_id,
+            'supplier_id' => $buku->supplier_id,
             'jumlah' => $request->jumlah,
             'keterangan' => $request->keterangan,
         ]);
@@ -152,5 +154,40 @@ class MasukController extends Controller
         $masuk = Masuk::findOrFail($id);
         $masuk->delete();
         return redirect()->route('masuk.index')->with('success', 'Data buku masuk berhasil dihapus.');
+    }
+
+    public function data(Request $request)
+    {
+        // Ambil data Masuk beserta relasi buku dan supplier
+        $masuk = Masuk::with(['buku', 'supplier'])->get();
+        if ($request->has('search') && $request->input('search.value') !== null) {
+            $search = $request->input('search.value');
+            if (!empty($search)) {
+                $masuk->where(function ($query) use ($search) {
+                    $query->whereHas('buku', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%")
+                            ->orWhere('part_no', 'like', "%{$search}%")
+                            ->orWhere('penerbit', 'like', "%{$search}%");
+                    })->orWhereHas('supplier', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%")
+                            ->orWhere('address', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%");
+                    })->orWhere('tanggal_masuk', 'like', "%{$search}%")
+                        ->orWhere('keterangan', 'like', "%{$search}%")
+                        ->orWhere('jumlah', 'like', "%{$search}%");
+                });
+            }
+        }
+
+        return datatables()
+            ->of($masuk)
+            ->addColumn('action', function ($masuk) {
+                return view('masuk.partials.action', compact('masuk'))->render();
+            })
+            // ->editColumn('stock', function ($masuk) {
+            //     return $masuk->buku->stock ?? 0;
+            // })
+            ->rawColumns(['action']) // wajib jika return HTML
+            ->make(true);
     }
 }

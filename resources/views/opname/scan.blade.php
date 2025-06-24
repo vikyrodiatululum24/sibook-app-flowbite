@@ -1,5 +1,12 @@
 <x-app-layout>
-    <div class="pt-10 sm:ml-64">
+    <x-slot name="header">
+        <div class="sm:flex justify-between items-center">
+            <h2 class="font-semibold text-xl mb-4 text-gray-800 leading-tight dark:text-white">
+                {{ __('Scan Opname Buku') }}
+            </h2>
+        </div>
+    </x-slot>
+    <div class="sm:ml-64">
         <div class="p-4 bg-white dark:bg-gray-800 rounded shadow">
             <div class="bg-base-100 overflow-hidden shadow-xs sm:rounded-lg">
                 <div class="p-6 ">

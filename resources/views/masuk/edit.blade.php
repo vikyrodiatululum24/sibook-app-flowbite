@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="sm:flex justify-center mx-auto items-center">
             <h2 class="font-semibold text-xl mb-4 text-gray-800 leading-tight dark:text-white">
-                {{ __('Tambah Data Buku Masuk') }}
+                {{ __('Edit Data Buku Masuk') }}
             </h2>
         </div>
     </x-slot>
@@ -204,6 +204,33 @@
                 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
             );
         });
+
+        // Otomatis set supplier berdasarkan buku
+        $('#buku_id').on('change', function() {
+            var bukuId = $(this).val();
+            if (bukuId) {
+                // Ambil supplier otomatis
+                $.ajax({
+                    url: '/api/buku/' + bukuId + '/supplier',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        var newOption = new Option(data.name, data.id, true, true);
+                        $('#supplier').empty().append(newOption).trigger('change');
+                    },
+                    error: function() {
+                        $('#supplier').empty().append('<option value="" selected></option>')
+                            .trigger('change');
+                    }
+                });
+
+            } else {
+                $('#supplier').empty().append('<option value="" selected></option>').trigger('change');
+                $('#stok_sistem').val('');
+            }
+        });
+
+        // Nonaktifkan select supplier agar readonly
+        $('#supplier').prop('disabled', true);
     });
 </script>
-{{-- jquery select2 --}}
