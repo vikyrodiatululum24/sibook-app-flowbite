@@ -20,8 +20,20 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|unique:customers,name',
+        ]);
         Customer::create($request->all());
         return redirect()->route('customer.index')->with('success', 'Customer berhasil ditambahkan.');
+    }
+
+    public function storeKeluar(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|unique:customers,name',
+        ]);
+        Customer::create($request->all());
+        return redirect()->back()->with('success', 'Customer berhasil ditambahkan.');
     }
 
     public function show($id)

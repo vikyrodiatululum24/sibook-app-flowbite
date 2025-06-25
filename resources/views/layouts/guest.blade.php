@@ -31,7 +31,7 @@
         <div class="flex flex-col items-center justify-center mb-6">
             {{-- Logo --}}
             {{-- <x-application-logo class="w-20 h-20 fill-current text-gray-500" /> --}}
-            <img src="{{  asset('img/logoLighh.png') }}" alt="" class="w-20 h-20 fill-current text-gray-500 dark:text-gray-400">
+            <img src="img/logoLighh.png" alt="" class="w-20 h-20 fill-current text-gray-500 dark:text-gray-400">
             {{-- <x-application-logo class="w-20 h-20 fill-current text-gray-500" /> --}}
             <a href="/">
                 <x-application-logo class="w-20 h-20 fill-current text-gray-500" />

@@ -1,4 +1,4 @@
-div<x-app-layout>
+<x-app-layout>
     <div class="p-4 sm:ml-64 pt-30 relative">
         <div
             class="flex flex-col mx-auto max-w-lg bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -34,9 +34,10 @@ div<x-app-layout>
                         </div>
                     </div>
                 @endif
-                <form class="max-w-full" method="POST" action="{{ isset($opname) ? route('opname.tambah', $opname->id) : route('opname.store') }}">
+                <form class="max-w-full" method="POST"
+                    action="{{ isset($opname) ? route('opname.tambah', $opname->id) : route('opname.store') }}">
                     @csrf
-                    @if(isset($opname))
+                    @if (isset($opname))
                         @method('PUT')
                     @endif
                     <input type="hidden" name="buku_id" value="{{ $buku->id }}" />
@@ -45,15 +46,16 @@ div<x-app-layout>
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stok Sistem</label>
                         <input type="number" id="stock_system" name="stock_system"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Stok sistem otomatis" readonly value="{{ $opname->stock_system }}"/>
+                            placeholder="Stok sistem otomatis" readonly
+                            value="{{ isset($opname) ? $opname->stock_system : $buku->stock }}" />
                     </div>
                     <div class="mb-4">
-                        <label for="tambah"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stock Opname</label>
+                        <label for="tambah" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stock
+                            Opname</label>
                         <input type="number" id="stock_opname" name="stock_opname"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Masukan Stock Opname" required value=""/>
-                        @if(isset($opname))
+                            placeholder="Masukan Stock Opname" required value="" />
+                        @if (isset($opname))
                             <p class="text-gray-500 mb-2 text-xs">Opname Sebelumnya : {{ $opname->stock_opname }}</p>
                         @endif
                     </div>
@@ -62,7 +64,7 @@ div<x-app-layout>
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal Opname</label>
                         <input type="date" id="tanggal_opname" name="tanggal_opname"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            required value="{{ isset($opname) ? $opname->tanggal_opname : '' }}"/>
+                            required value="{{ isset($opname) ? $opname->tanggal_opname : '' }}" />
                     </div>
                     <button type="submit"
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
