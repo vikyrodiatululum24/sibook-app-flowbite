@@ -91,31 +91,43 @@
                     <!-- Customer Icon -->
                     <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                         fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <circle cx="12" cy="8" r="4" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 20c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+                        <circle cx="12" cy="8" r="4" stroke-linecap="round" stroke-linejoin="round" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 20c0-2.21 3.582-4 8-4s8 1.79 8 4" />
                     </svg>
                     <span class="flex-1 ms-3 whitespace-nowrap">Customer</span>
                 </a>
             </li>
-            @if(auth()->user() && auth()->user()->role === 'admin')
-            <li>
-                <a href="{{ route('users.index') }}"
-                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                    <!-- Users/Admin Icon -->
-                    <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                    </svg>
-                    <span class="flex-1 ms-3 whitespace-nowrap">Pengguna</span>
-                </a>
-            </li>
+            @if (auth()->user() && auth()->user()->role === 'admin')
+                <li>
+                    <a href="{{ route('users.index') }}"
+                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <!-- Users/Admin Icon -->
+                        <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Pengguna</span>
+                    </a>
+                </li>
             @endif
+            <li>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit"
+                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                        role="menuitem">
+                        <svg class="inline w-5 h-5 mr-2 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1" />
+                        </svg>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Sign out</span>
+                    </button>
+                </form>
+            </li>
         </ul>
     </div>
 </aside>
