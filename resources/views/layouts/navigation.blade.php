@@ -14,14 +14,12 @@
                     </svg>
                 </button>
                 <a href="{{ route('dashboard') }}" class="flex ms-2 md:me-24">
-                    <img src="{{ asset('img/logoLighh.png') }}" class="h-10 me-3 " alt="FlowBite Logo" />
+                    <img src="{{ asset('img/LogoLighh.png') }}" class="h-10 me-3 " alt="FlowBite Logo" />
                     <span
                         class="self-center text-xl font-extrabold sm:text-3xl whitespace-nowrap text-blue-900 dark:text-white">BOOTS</span>
                 </a>
             </div>
             <div class="flex items-center">
-
-
                 <div class="relative me-3">
                     <button id="notificationDropdownButton" data-dropdown-toggle="notificationDropdown"
                         class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 relative"

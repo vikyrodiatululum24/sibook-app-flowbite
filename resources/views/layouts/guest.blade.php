@@ -31,14 +31,15 @@
         <div class="flex flex-col items-center justify-center mb-6">
             {{-- Logo --}}
             {{-- <x-application-logo class="w-20 h-20 fill-current text-gray-500" /> --}}
-            <img src="img/logoLighh.png" alt="" class="w-20 h-20 fill-current text-gray-500 dark:text-gray-400">
+            <img src="img/LogoLighh.png" alt="" class="w-20 h-20 fill-current text-gray-500 dark:text-gray-400">
             {{-- <x-application-logo class="w-20 h-20 fill-current text-gray-500" /> --}}
             <a href="/">
                 <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
             </a>
         </div>
 
-        <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-900 shadow-md overflow-hidden sm:rounded-lg">
+        <div
+            class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-900 shadow-md overflow-hidden sm:rounded-lg">
             {{ $slot }}
         </div>
     </div>
